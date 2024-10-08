@@ -28,23 +28,63 @@ class DashboardController extends Controller
 
         // Calculate total hours for today
         $today = Carbon::today();
-        $todayTotalHours = $attendances->filter(function ($attendance) use ($today) {
-            return Carbon::parse($attendance->created_at)->isToday();
-        })->sum('total_hours');
+        $todayTotalHours = 0;
+
+        foreach ($attendances as $attendance) {
+            $attendanceDate = Carbon::parse($attendance->created_at);
+            if ($attendanceDate->isToday()) {
+                if ($attendance->clock_out) {
+                    // If clock out is available, calculate total hours between clock_in and clock_out
+                    $clockIn = Carbon::parse($attendance->clock_in);
+                    $clockOut = Carbon::parse($attendance->clock_out);
+                    $todayTotalHours += $clockIn->diffInMinutes($clockOut) / 60;
+                } elseif ($attendance->clock_in) {
+                    // If clock out is missing, calculate time from clock_in to now
+                    $clockIn = Carbon::parse($attendance->clock_in);
+                    $todayTotalHours += $clockIn->diffInMinutes(Carbon::now()) / 60;
+                }
+            }
+        }
 
         // Calculate total hours for the current week
         $startOfWeek = Carbon::now()->startOfWeek();
         $endOfWeek = Carbon::now()->endOfWeek();
-        $weeklyTotalHours = $attendances->filter(function ($attendance) use ($startOfWeek, $endOfWeek) {
-            return Carbon::parse($attendance->created_at)->between($startOfWeek, $endOfWeek);
-        })->sum('total_hours');
+        $weeklyTotalHours = 0;
+        foreach ($attendances as $attendance) {
+            $attendanceDate = Carbon::parse($attendance->created_at);
+            if ($attendanceDate->between($startOfWeek, $endOfWeek)) {
+                if ($attendance->clock_out) {
+                    // Calculate weekly total hours if clock out is available
+                    $clockIn = Carbon::parse($attendance->clock_in);
+                    $clockOut = Carbon::parse($attendance->clock_out);
+                    $weeklyTotalHours += $clockIn->diffInMinutes($clockOut) / 60;
+                } elseif ($attendance->clock_in) {
+                    // If clock out is missing, calculate up to now
+                    $clockIn = Carbon::parse($attendance->clock_in);
+                    $weeklyTotalHours += $clockIn->diffInMinutes(Carbon::now()) / 60;
+                }
+            }
+        }
 
         // Calculate total hours for the current month
         $startOfMonth = Carbon::now()->startOfMonth();
         $endOfMonth = Carbon::now()->endOfMonth();
-        $monthlyTotalHours = $attendances->filter(function ($attendance) use ($startOfMonth, $endOfMonth) {
-            return Carbon::parse($attendance->created_at)->between($startOfMonth, $endOfMonth);
-        })->sum('total_hours');
+        $monthlyTotalHours = 0;
+        foreach ($attendances as $attendance) {
+            $attendanceDate = Carbon::parse($attendance->created_at);
+            if ($attendanceDate->between($startOfMonth, $endOfMonth)) {
+                if ($attendance->clock_out) {
+                    // Calculate monthly total hours if clock out is available
+                    $clockIn = Carbon::parse($attendance->clock_in);
+                    $clockOut = Carbon::parse($attendance->clock_out);
+                    $monthlyTotalHours += $clockIn->diffInMinutes($clockOut) / 60;
+                } elseif ($attendance->clock_in) {
+                    // If clock out is missing, calculate up to now
+                    $clockIn = Carbon::parse($attendance->clock_in);
+                    $monthlyTotalHours += $clockIn->diffInMinutes(Carbon::now()) / 60;
+                }
+            }
+        }
 
         // Define the total hours expected per week
         $totalHoursPerWeek = 36;
@@ -67,7 +107,7 @@ class DashboardController extends Controller
             'weeklyTotalHours' => $weeklyTotalHours,
             'monthlyTotalHours' => $monthlyTotalHours,
             'leftHoursPerWeek' => $leftHoursPerWeek,
-            'leftHoursPerMonth' => $leftHoursPerMonth, // Added left hours for the month
+            'leftHoursPerMonth' => $leftHoursPerMonth,
             'isClockedIn' => $attendances->whereNull('clock_out')->isNotEmpty(),
         ]);
     }

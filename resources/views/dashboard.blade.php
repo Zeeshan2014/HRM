@@ -1,6 +1,7 @@
 <x-layout>
-<div class="grid grid-cols-1 gap-4 px-4 mt-8 sm:grid-cols-4 sm:px-8">
     <!-- Today's Total Hours Card -->
+<div class="grid grid-cols-1 gap-4 px-4 mt-8 sm:grid-cols-4 sm:px-8">
+    
     <div class="flex items-center bg-white border rounded-lg overflow-hidden shadow-lg transition-transform transform hover:scale-105">
         <div class="p-4 bg-green-500 rounded-l-lg">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -10,21 +11,22 @@
             </svg>
         </div>
         <div class="px-4 py-6 text-gray-800">
-            <h3 class="text-sm font-semibold tracking-wider">Today Total Hours</h3>
-            <p class="text-3xl font-bold">
-                @if($todayTotalHours)
-                    @php
-                        $hours = floor($todayTotalHours);
-                        $minutes = floor(($todayTotalHours - $hours) * 60);
-                        $seconds = floor((($todayTotalHours - $hours) * 60 - $minutes) * 60);
-                    @endphp
-                    {{ sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds) }}
-                @else
-                    N/A
-                @endif
-            </p>
-        </div>
-    </div>
+    <h3 class="text-sm font-semibold tracking-wider">Today's Total Hours</h3>
+    <p class="text-3xl font-bold">
+        @if($todayTotalHours)
+            @php
+                $hours = floor($todayTotalHours);
+                $minutes = floor(($todayTotalHours - $hours) * 60);
+                $seconds = floor((($weeklyTotalHours - $hours) * 60 - $minutes) * 60);
+            @endphp
+            {{ sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds) }}
+        @else
+            N/A
+        @endif
+    </p>
+</div>
+
+</div>
 
     <!-- This Week Total Hours Card -->
     <div class="flex items-center bg-white border rounded-lg overflow-hidden shadow-lg transition-transform transform hover:scale-105">
