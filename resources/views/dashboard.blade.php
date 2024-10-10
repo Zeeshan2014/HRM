@@ -17,9 +17,9 @@
             @php
                 $hours = floor($todayTotalHours);
                 $minutes = floor(($todayTotalHours - $hours) * 60);
-                $seconds = floor((($weeklyTotalHours - $hours) * 60 - $minutes) * 60);
+               
             @endphp
-            {{ sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds) }}
+            {{ sprintf('%02d:%02d', $hours, $minutes) }}
         @else
             N/A
         @endif
