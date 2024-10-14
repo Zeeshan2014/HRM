@@ -11,6 +11,11 @@ use App\Models\Attendance;
 use App\Models\Weekend;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdminLoginController;
+use App\Http\Controllers\AdminDashboardController;
+
+
+
 
 /* Route::get('/', function () {
     return view('dashboard');
@@ -86,9 +91,8 @@ Route::get('/workfh', [WorkFromHomeController::class, 'index'])->name('wfh.index
 
 
 
-Route::get('/leaves', function () {
-    return view('leaves');
-});
+
+
 
 
 require __DIR__.'/auth.php';
