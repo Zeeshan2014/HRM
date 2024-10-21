@@ -17,7 +17,7 @@
 
         <!-- Assuming you have a collection of requests to display -->
         @if ($requests->isEmpty())
-            <p class="text-gray-600">No pending requests at the moment.</p>
+            <p class="text-gray-600">No pending requests at the moment. Refresh to check latest</p>
         @else
             <div class="overflow-x-auto">
                 <table class="min-w-full bg-white rounded-lg shadow overflow-hidden">
