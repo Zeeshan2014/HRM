@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminRequestController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\LeavesController;
 use App\Http\Controllers\OvertimeController;
@@ -11,36 +12,28 @@ use App\Models\Attendance;
 use App\Models\Weekend;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\AdminLoginController;
-use App\Http\Controllers\AdminDashboardController;
-
-
-
+use App\Http\Controllers\RequestController;
+use App\http\Controllers\AdminDashboardController;
+use App\http\Controllers\HistoryController;
 
 /* Route::get('/', function () {
     return view('dashboard');
 }); */
+Route::get('/admin-history', [HistoryController::class, 'adminview'])->name('history');
+Route::get('/history', [HistoryController::class, 'userview'])->name('user-history');
+
+
+
+// Route for admins with the "admin" role
+/* Route::get('/admin-history', function () {
+    return view('history');
+})->middleware(['auth', 'role:admin']); */
 
 Route::get('/', [DashboardController::class, 'view'])->middleware(['auth', 'verified'])->name('home');
 
 Route::get('/dashboard', [DashboardController::class, 'view'])->middleware(['auth', 'verified'])->name('dashboard');
 
-
-
-
-
-
-
-  // Route to display the dashboard with weekend attendance
- 
-  
-
-
-
-
-
-
-
+// Route to display the dashboard with weekend attendance
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -48,21 +41,36 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-/* Route::resource('attendance', AttendanceController::class)->only(['index', 'store']); */
+
+
+Route::middleware('auth')->group(function () {
+    Route::post('/request/create', [RequestController::class, 'create'])->name('request.create');
+});
+Route::get('/requests', function () {
+    return view('requests');
+});
+
+Route::get('/pending-requests', [AdminRequestController::class, 'index'])->name('admin.requests.pending');
+Route::post('/admin/requests/{id}/approve', [AdminRequestController::class, 'approve'])->name('admin.requests.approve');
+Route::post('/admin/requests/{id}/reject', [AdminRequestController::class, 'reject'])->name('admin.requests.reject');
+
+Route::get('/admin-dashboard', [AdminDashboardController::class, 'view']);
+
+
+
+
+/* Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminRequestController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/pending-requests', [AdminRequestController::class, 'index'])->name('admin.requests.pending');
+    Route::post('/admin/requests/{id}/approve', [AdminRequestController::class, 'approve'])->name('admin.requests.approve');
+}); */
+
+
+
 
 Route::get('/attendance', [AttendanceController::class, 'index']);
 Route::post('/attendance/clockin', [AttendanceController::class, 'clockIn']);
 Route::post('/attendance/clockout', [AttendanceController::class, 'clockOut']);
-
-Route::post('/leave/request', [LeavesController::class, 'requestLeave']);
-Route::get('/leave/status', [LeavesController::class, 'leaveStatus']);
-
-Route::post('/wfh/request', [WfhController::class, 'requestWFH']);
-Route::get('/wfh/status', [WfhController::class, 'statusWFH']);
-
-Route::post('/overtime/log', [OvertimeController::class, 'logOvertime']);
-
-
 
 Route::get('/daily', function () {
     return view('daily');
@@ -91,8 +99,9 @@ Route::get('/workfh', [WorkFromHomeController::class, 'index'])->name('wfh.index
 
 
 
+Route::get('/leaves', function () {
+    return view('leaves');
+});
 
 
-
-
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

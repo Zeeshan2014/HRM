@@ -17,6 +17,7 @@ return new class extends Migration
             $table->timestamp('clock_in')->nullable();
             $table->timestamp('clock_out')->nullable();
             $table->time('total_hours')->nullable();
+            $table->boolean('is_leave')->default(false);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

@@ -33,50 +33,15 @@
 
       <!-- Menu Items -->
       <nav class="space-y-4">
-        
-        @if (Auth::user()->hasRole ('admin'))
-        <a href="/admin-dashboard" class="flex items-center space-x-2 p-3 hover:bg-black hover:text-white rounded-lg">
-            <span class="material-icons">dashboard</span>
-            <span>Dashboard</span>
-          </a>
-          <a href="/daily" class="flex items-center space-x-2 p-3 hover:bg-black hover:text-white rounded-lg">
-            <span class="material-icons">today</span>
-            <span>Daily Attendance</span>
-          </a>
-         
-          <a href="/requests" class="flex items-center space-x-2 p-3 hover:bg-black hover:text-white rounded-lg">
-            <span class="material-icons">request_page</span>
-            <span>Requests</span>
-          </a>
-          <a href="/pending-requests" class="flex items-center space-x-2 p-3 hover:bg-black hover:text-white rounded-lg">
-            <span class="material-icons">sick</span>
-            <span>Aprovals</span>
-          </a>
-          <a href="/admin-history" class="flex items-center space-x-2 p-3 hover:bg-black hover:text-white rounded-lg">
-            <span class="material-icons">history</span>
-            <span>History</span>
-          </a>
-          
-        @else
-          <a href="/dashboard" class="flex items-center space-x-2 p-3 hover:bg-black hover:text-white rounded-lg">
-            <span class="material-icons">dashboard</span>
-            <span>Dashboard</span>
-          </a>
-          <a href="/daily" class="flex items-center space-x-2 p-3 hover:bg-black hover:text-white rounded-lg">
-            <span class="material-icons">today</span>
-            <span>Daily Attendance</span>
-          </a>
-         
-          <a href="/requests" class="flex items-center space-x-2 p-3 hover:bg-black hover:text-white rounded-lg">
-            <span class="material-icons">request_page</span>
-            <span>Requests</span>
-          </a>
-          <a href="/history" class="flex items-center space-x-2 p-3 hover:bg-black hover:text-white rounded-lg">
-            <span class="material-icons">history</span>
-            <span>History</span>
-          </a>
-        @endif
-        
+        <a href="/dashboard" class="flex items-center space-x-2 p-3 hover:bg-black hover:text-white rounded-lg">
+          <span class="material-icons">dashboard</span>
+          <span>Dashboard</span>
+        </a>
+       
+        <a href="{{ route('admin.requests') }}" class="flex items-center space-x-2 p-3 hover:bg-black hover:text-white rounded-lg">
+          <span class="material-icons">sick</span>
+          <span>Requests</span>
+        </a>
       </nav>
 
       <!-- User Profile -->

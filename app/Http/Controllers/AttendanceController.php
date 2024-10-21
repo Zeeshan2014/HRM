@@ -92,4 +92,58 @@ class AttendanceController extends Controller
             return redirect()->back()->with('success', 'Clocked in successfully.');
         }
     }
+
+    public function weeklyTotalHours()
+    {
+        $user = Auth::user();
+        
+        $startOfWeek = Carbon::now()->startOfWeek();
+        $endOfWeek = Carbon::now()->endOfWeek();
+
+        // Get total hours for this week excluding leave days
+        $totalHours = DB::table('attendance')
+            ->where('user_id', $user->id)
+            ->whereBetween('clock_in', [$startOfWeek, $endOfWeek])
+            ->where('is_leave', false) // Exclude leave days
+            ->sum('total_hours');
+
+        // Get number of leave days this week
+        $leaveDays = DB::table('attendance')
+            ->where('user_id', $user->id)
+            ->whereBetween('clock_in', [$startOfWeek, $endOfWeek])
+            ->where('is_leave', true) // Count leave days
+            ->count();
+
+        // Subtract 8 hours for each leave day
+        $finalTotalHours = $totalHours - ($leaveDays * 8);
+
+        return view('dashboard', compact('finalTotalHours'));
+    }
+
+    public function monthlyTotalHours()
+    {
+        $user = Auth::user();
+        
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
+        // Get total hours for this month excluding leave days
+        $totalHours = DB::table('attendance')
+            ->where('user_id', $user->id)
+            ->whereBetween('clock_in', [$startOfMonth, $endOfMonth])
+            ->where('is_leave', false) // Exclude leave days
+            ->sum('total_hours');
+
+        // Get number of leave days this month
+        $leaveDays = DB::table('attendance')
+            ->where('user_id', $user->id)
+            ->whereBetween('clock_in', [$startOfMonth, $endOfMonth])
+            ->where('is_leave', true) // Count leave days
+            ->count();
+
+        // Subtract 8 hours for each leave day
+        $finalTotalHours = $totalHours - ($leaveDays * 8);
+
+        return view('dashboard', compact('finalTotalHours'));
+    }
 }

@@ -17,9 +17,7 @@ class WeekendController extends Controller
         $user = Auth::user();
 
         $existingAttendance = Weekend::where('user_id', $user->id)->whereNull('clock_out')->first();
-        return view('weekend', [
-            'isClockedIn' => $existingAttendance ? true : false,
-        ]);
+      
     }
     
 
